@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP Farmacias Cruz Azul</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { color: #003399; text-align: center; }
+        form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        input, button { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        button { background-color: #003399; color: white; cursor: pointer; border: none; }
+        button:hover { background-color: #002266; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Gestión de Productos - Cruz Azul</h1>
+
+    <h3>Registrar Nuevo Producto</h3>
+    <form action="/api/productos" method="POST">
+        <input type="text" name="nombre" placeholder="Nombre del Insumo/Producto" required>
+        <input type="number" name="precio" placeholder="Precio (CLP)" required>
+        <button type="submit">Guardar Producto</button>
+    </form>
+
+    <hr>
+
+    <h3>Inventario Actual</h3>
+    <button onclick="cargarProductos()">Actualizar Lista</button>
+    <table id="tablaProductos">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Producto</th>
+                <th>Precio</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+</div>
+
+<script>
+    async function cargarProductos() {
+        const response = await fetch('/api/productos');
+        const productos = await response.json();
+        const tbody = document.querySelector('#tablaProductos tbody');
+        tbody.innerHTML = '';
+
+        productos.forEach(p => {
+            const row = `<tr>
+                <td>${p.id}</td>
+                <td>${p.nombre}</td>
+                <td>$${p.precio}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    // Cargar automáticamente al abrir la página
+    window.onload = cargarProductos;
+</script>
+
+</body>
+</html>
