@@ -5,17 +5,18 @@ const path = require('path');
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public')); 
 
-// Configuración de conexión a PostgreSQL (usa los nombres del docker-compose)
+
 const pool = new Pool({
-  user: 'postgres',
-  host: 'db-server', // Nombre del servicio en Docker
-  database: 'cruz_azul_db',
-  password: 'tu_password',
+  user: 'admin_cruzazul',
+  host: '54.88.0.187', 
+  database: 'farmacia_db',
+  password: 'password123',
   port: 5432,
 });
 
-// Endpoint para obtener productos (GET)
+// Endpoint para consultar productos (GET)
 app.get('/api/productos', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM productos');
@@ -27,10 +28,10 @@ app.get('/api/productos', async (req, res) => {
 
 // Endpoint para insertar productos (POST)
 app.post('/api/productos', async (req, res) => {
-  const { nombre, stock, precio } = req.body;
+  const { nombre, precio } = req.body;
   try {
-    await pool.query('INSERT INTO productos (nombre, stock, precio) VALUES ($1, $2, $3)', [nombre, stock, precio]);
-    res.redirect('/');
+    await pool.query('INSERT INTO productos (nombre, precio) VALUES ($1, $2)', [nombre, precio]);
+    res.redirect('/'); // Recarga la página tras guardar
   } catch (err) {
     res.status(500).send(err.message);
   }
